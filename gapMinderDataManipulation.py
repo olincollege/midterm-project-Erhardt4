@@ -56,13 +56,32 @@ def plotData(data):
 def plotChosenCountries(countryList):
     dataframe = createDataFrame("EIU_Democracy_Index.csv")
     data = getSpecificCountriesData(dataframe, countryList)
+    plotData(data)
+    
+def getRates(countryList):
+    dataframe = createDataFrame("EIU_Democracy_Index.csv")
+    data = getSpecificCountriesData(dataframe, countryList)
+    rates = {}
+    for key in data:
+        temp = []
+        for i in range(len(data[key])-1):
+            temp.append(((data[key][i+1]-data[key][i])/data[key][i])*100)
+        rates[key] = temp
+    return rates
+
+def plotRates(data):
     plt.figure()
     yearList = getYearList("EIU_Democracy_Index.csv")
+    yearList = yearList[1:]
     for element in data:
         plt.plot(yearList, data[element], marker =  '+')
     plt.xlabel("Years")
-    plt.ylabel("EIU Democracy Index Value")
+    plt.ylabel("Rate of Change of EIU Index Value (%)")
     plt.xlim(2006, 2026)
-    plt.ylim(0,1)
+    #plt.ylim(-90,110)
     plt.legend(data.keys(), loc = 'best')
-    plt.title("EIU Democracy Index Value Over Time")
+    plt.title("Rate of Change of EIU Democracy Index Value Over Time")
+    
+def plotRateChosenCountries(countryList):
+    rates = getRates(countryList)
+    plotRates(rates)
