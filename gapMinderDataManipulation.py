@@ -85,3 +85,30 @@ def plotRates(data):
 def plotRateChosenCountries(countryList):
     rates = getRates(countryList)
     plotRates(rates)
+    
+def plotHistogram(yearIndex):
+    dataframe  = createDataFrame("EIU_Democracy_Index.csv")
+    allCountries = range(0,164)
+    allData = getSpecificCountriesData(dataframe, allCountries)
+    data = []
+    for element in allData:
+        data.append(allData[element][yearIndex])
+    plt.figure()
+    plt.hist(data)
+    plt.xlabel("EIU Index Scores")
+    plt.ylabel("Frequency")
+
+def plotHistogramAllYears():
+    fig, axs = plt.subplots(5, 3, sharey='row', figsize=(20, 30))
+    dataframe  = createDataFrame("EIU_Democracy_Index.csv")
+    allCountries = range(0,164)
+    allData = getSpecificCountriesData(dataframe, allCountries)
+    for i in range(13):
+        data = []
+        for element in allData:
+            data.append(allData[element][i])
+        ax = axs[i//3,i%3]
+        ax.hist(data, bins=20, color='blue', alpha=0.75)
+        ax.set_xlabel("EIU Index")
+        ax.set_ylabel("Frequency")
+        ax.set_title(f"EIU Index of Each Country in {i+2006}")
