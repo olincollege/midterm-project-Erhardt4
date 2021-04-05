@@ -48,7 +48,7 @@ def plotData(data):
 
     plt.xlabel("Years")
     plt.ylabel("EIU Democracy Index Value")
-    plt.xlim(2006, 2026)
+    plt.xlim(2006, 2020)
     plt.ylim(0,1)
     plt.legend(data.keys(), loc = 'best')
     plt.title("EIU Democracy Index Value Over Time")
@@ -77,7 +77,7 @@ def plotRates(data):
         plt.plot(yearList, data[element], marker =  '+')
     plt.xlabel("Years")
     plt.ylabel("Rate of Change of EIU Index Value (%)")
-    plt.xlim(2006, 2026)
+    plt.xlim(2006, 2020)
     #plt.ylim(-90,110)
     plt.legend(data.keys(), loc = 'best')
     plt.title("Rate of Change of EIU Democracy Index Value Over Time")
@@ -112,3 +112,16 @@ def plotHistogramAllYears():
         ax.set_xlabel("EIU Index")
         ax.set_ylabel("Frequency")
         ax.set_title(f"EIU Index of Each Country in {i+2006}")
+def plotHistogramAllData():
+    dataframe  = createDataFrame("EIU_Democracy_Index.csv")
+    allCountries = range(0,164)
+    allData = getSpecificCountriesData(dataframe, allCountries)
+    data = []
+    for element in allData:
+        for i in range(13):
+            data.append(allData[element][i])
+    plt.figure()
+    plt.hist(data, bins = 20, color='blue')
+    plt.xlabel("EIU Index Scores")
+    plt.ylabel("Frequency")
+    plt.title("EIU Index of Each Country")
