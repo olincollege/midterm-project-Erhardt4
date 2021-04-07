@@ -1,10 +1,49 @@
 from pytrends.request import TrendReq
-import pandas
+import pandas as pd
 import matplotlib.pyplot as plt
 import pylab as pl
+import os.path
+from os import path
 
 pytrends = TrendReq(hl='en-US', tz=360)
 
+def makeCSV(countryList):
+    """
+    This function makes a csv in the 'pytrends_Data' folder with an
+    identifiable name of the csv based on the countryList. By having
+    the country list, we can construct a data frame and save it. This
+    reduces the number of times needed to ping Google.
+
+    Args:
+        countryList: A list of the country search terms
+
+    Returns:
+        No returns, makes a csv in folder 'Pytrends_Data' that saves a 
+        dataframe of interest over time.
+    """
+    pytrends = TrendReq(hl='en-US', tz=360)
+    pytrends.build_payload(countryList, cat=0, timeframe='all',
+                           geo='US', gprop='')  
+    data = pytrends.interest_over_time()
+    data = data[countryList]
+    name = csvName(countryList)
+    data.to_csv(r'pytrends_Data/'+name+'.csv')
+
+def readCSV(countryList):
+    """
+    This function reads a csv in the 'pytrends_Data' folder with an
+    identifiable name of the csv in the countryList. This
+    reduces the number of times needed to ping Google.
+
+    Args:
+        countryList: A list of the country search terms
+
+    Returns:
+        A dataframe of the interest over time of countries in countryList
+    """
+    name = csvName(countryList)    
+    data = pd.read_csv('pytrends_Data/'+name+'.csv')
+    return data
 
 def makePlots(countryData, countryList):
     """
@@ -14,20 +53,17 @@ def makePlots(countryData, countryList):
     Args:
         countryData: A dataframe with columns of a country's interest 
         value and time.
-        countryList: A list of the countries that are being plotted.
+        countryList: A list of the country search terms
 
     Returns:
         No returns, instead inserts a plot
     """
-    hold()
-    hold(True)
     countryData.plot()
     plt.xlabel("Years")
     plt.ylabel("Relative Interest (0-100)")
     plt.legend(countryData, loc='best', fancybox=True)
     stringCountry = listToString(countryList)
     plt.title(stringCountry + ",\" of Interest In the US over Time")
-    hold(False)
 
 
 def listToString(countryList):
@@ -36,14 +72,29 @@ def listToString(countryList):
     the join function, and adds a commas (',') and a space (' '). 
 
     Args:
-        countryList: A list of the countries.
+        countryList: A list of the country search terms
 
     Returns:
         stringCountry: A single string containing all the countries
     """
     stringCountry = ", ".join(countryList)
     return stringCountry
+                
+def csvName(countryList):
+    """
+    This function returns a single string from a list of strings by using
+    the join function, adds '_' to split keywords, and removes all spaces
+    from the string to make file referencing easier. 
 
+    Args:
+        countryList: A list of the country search terms
+
+    Returns:
+        stringCountry: A single string containing all the countries
+    """
+    stringCountry = "_".join(countryList)
+    stringCountry = stringCountry.replace(" ", "")
+    return stringCountry
 
 def rollingAveragePct(countryData, keywords, months):
     """
@@ -64,15 +115,13 @@ def rollingAveragePct(countryData, keywords, months):
     b = countryData.rolling(months).mean()  # Rolling Average
     b = b.pct_change()  # Percent Change
     b.plot()
-    hold()
-    hold(True)
+
     plt.xlabel("Years")
     plt.ylabel("ROC (times 100%)")
     plt.legend(countryData, loc='best', fancybox=True)
     stringCountry = listToString(keywords)
     plt.title(str(months) + " Month Rolling Average ROC for, \"" +
               stringCountry + ",\" of Interest In the US over Time")
-    hold(False)
 
 
 def rollingAverage(countryData, keywords, months):
@@ -93,15 +142,14 @@ def rollingAverage(countryData, keywords, months):
     """
     b = countryData.rolling(months).mean()  # Rolling Average
     b.plot()
-    hold()
-    hold(True)
+
     plt.xlabel("Years")
     plt.ylabel("Interest Level")
     plt.legend(countryData, loc='best', fancybox=True)
     stringCountry = listToString(keywords)
     plt.title(str(months) + " Month Rolling Average for, \"" +
               stringCountry + ",\" of Interest In the US over Time")
-    hold(False)
+
 
 
 def histograms(countryData, keyword):
@@ -115,13 +163,11 @@ def histograms(countryData, keyword):
     Returns:
         No returns, inserts a plot
     """
-    hold()
-    hold(True)
+
     histdata = countryData.hist([keyword])
     pl.xlabel("Interest Value")
     pl.ylabel("Frequency")
     pl.title("Histogram of " + keyword)
-    hold(False)
 
 
 def boxplots(countryData, keyword):
@@ -135,10 +181,30 @@ def boxplots(countryData, keyword):
     Returns:
         No returns, inserts a plot
     """
-    hold()
-    hold(True)
+
     boxdata = countryData.boxplot([keyword])
     # pl.xlabel("Value")
     pl.ylabel("Interest Value")
     pl.title("Boxplot of " + keyword)
-    hold(False)
+    
+def pytrendAnalysis(countryList, keyword, months):
+    """
+    This function does a complete analysis of the countryList. It checks
+    to see if the file for data analysis exists or not, and will make a csv
+    or skip to reading the file. It makes a plot of the data, the rolling average
+    percent changes, a histogram, and box plot of the data. 
+    
+    Args: 
+        countryList:
+        keyword: A string to specify the boxplot and histogram
+        months: An int, the number of months to average the data by.
+    """
+    name = csvName(countryList)
+    if(path.exists('pytrends_Data/'+name+'.csv') == False):
+        makeCSV(countryList)
+    data = readCSV(countryList)
+    makePlots(data, countryList)
+    rollingAveragePct(data, countryList, months)
+    histograms(data, keyword)
+    plt.figure(0)
+    boxplots(data, keyword)
