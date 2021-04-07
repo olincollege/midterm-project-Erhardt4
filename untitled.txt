@@ -1,7 +1,0 @@
-https://medium.com/analytics-vidhya/how-to-plot-data-on-a-world-map-in-python-25cf9733c3dd
-
-https://towardsdatascience.com/telling-stories-with-google-trends-using-pytrends-in-python-a11e5b8a177
-
-rot of change
-
-https://towardsdatascience.com/introduction-to-data-visualization-in-python-89a54c97fbed#:~:text=Data%20visualization%20is%20the%20discipline,with%20lots%20of%20different%20features.
