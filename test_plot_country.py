@@ -58,7 +58,7 @@ def test_list_to_string(country_list, country_string):
 
     Args:
         country_list: A list of strings of each country's name.
-        country_string: A string representing the expected output of the 
+        country_string: A string representing the expected output of the
                         list_to_string function
     """
     assert list_to_string(country_list) == country_string
@@ -69,7 +69,7 @@ def test_csv_name(country_list, country_string):
 
     Args:
         country_list: A list of strings of each country's name.
-        country_string: A string representing the expected output of the 
+        country_string: A string representing the expected output of the
                         csv_name function
     """
     assert csv_name(country_list) == country_string

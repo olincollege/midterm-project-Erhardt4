@@ -15,13 +15,12 @@ def make_csv(country_list):
     identifiable name of the csv based on the country_list. By having
     the country list, we can construct a data frame and save it. This
     reduces the number of times needed to ping Google.
-
     Args:
         country_list: A list of the country search terms
 
     Returns:
         No returns, makes a csv in folder 'pytrends_data' that saves a
-        dataframe of interest over time.
+        data  frame of interest over time.
     """
     pytrends.build_payload(country_list, cat=0, timeframe='2006-1-1 2019-01-1',
                            geo='US', gprop='')
@@ -34,15 +33,19 @@ def make_csv(country_list):
 def read_csv(country_list):
     """
     This function reads a csv in the 'pytrends_data' folder with an
-    identifiable name of the csv in the country_list and returns a dataframe
-    . This reduces the number of times needed to ping Google. If no csv
-    exists, then the function will make a csv.
+    identifiable name of the csv in the country_list and returns a data  frame.
+    This reduces the number of times needed to ping Google. If no csv
+    exists, then the function will make a csv. A limitation is that
+    we cannot remove the row index values, which affected the pandas
+    plotting, because 'dates' would no longer be the x axis. We were
+    not able to overcome this issue, but have left the function here
+    if this becomes solveable.
 
     Args:
         country_list: A list of the country search terms
 
     Returns:
-        A dataframe of the interest over time of countries in country_list
+        A data  frame of the interest over time of countries in country_list
     """
     name = csv_name(country_list)
     if not path.exists('pytrends_data/'+name+'.csv'):
@@ -52,12 +55,12 @@ def read_csv(country_list):
 
 def country_data_pytrend(country_list):
     """
-    This function gets data from Google directly and returns a dataframe.
+    This function gets data from Google directly and returns a data  frame.
 
     Args:
         country_list: A list of the country search terms
     Returns:
-        A dataframe of the interest over time of countries in country_list
+        A data  frame of the interest over time of countries in country_list
     """
     pytrends.build_payload(country_list, cat=0,
                            timeframe='2006-01-01 2019-01-1', geo='US', gprop='')
@@ -101,7 +104,7 @@ def make_plots(country_data, country_list):
     axis and titles to this plot.
 
     Args:
-        country_data: A dataframe with columns of a country's interest
+        country_data: A data  frame with columns of a country's interest
         value and time.
         country_list: A list of the country search terms
 
@@ -124,7 +127,7 @@ def rolling_average_pct(country_data, keywords, months):
     Finally, the function plots the data with the correct labels.
 
     Args:
-        country_data: A dataframe with columns of a country's interest
+        country_data: A data  frame with columns of a country's interest
         value and time.
         keywords: A list of the countries that are being plotted.
         months: An int, the number of months to average the data by.
@@ -151,7 +154,7 @@ def rolling_average(country_data, keywords, months):
     Finally, the function plots the data with the correct labels.
 
     Args:
-        country_data: A dataframe with columns of a country's interest
+        country_data: A data  frame with columns of a country's interest
         value and time.
         keywords: A list of the countries that are being plotted.
         months: An int, the number of months to average the data by.
@@ -171,11 +174,11 @@ def rolling_average(country_data, keywords, months):
 def histograms(country_data, keyword):
     """
     This function makes a histogram of the given data and inputs the appropriate
-    axis and titles to this histogram using the pandas dataframe functions.
+    axis and titles to this histogram using the pandas data  frame functions.
 
     Args:
-        country_data: A dataframe with columns of a country's interest value.
-        This dataframe can only contain data for one keyword
+        country_data: A data  frame with columns of a country's interest value.
+        This data  frame can only contain data for one keyword
         keyword: A string that is the column heading of the country_data
     Returns:
         No returns, inserts a plot
@@ -190,11 +193,11 @@ def histograms(country_data, keyword):
 def boxplots(country_data, keyword):
     """
     This function makes a boxplot of the given data and inputs the appropriate
-    axis and titles to this histogram using the pandas dataframe functions.
+    axis and titles to this histogram using the pandas data  frame functions.
 
     Args:
-        country_data: A dataframe with columns of a country's interest value.
-        This dataframe can only contain data for one keyword
+        country_data: A data  frame with columns of a country's interest value.
+        This data  frame can only contain data for one keyword
         keyword: A string that is the column heading of the country_data
     Returns:
         No returns, inserts a plot
@@ -211,10 +214,10 @@ def pytrend_analysis(data, country_list, keyword, months):
     to see if the file for data analysis exists or not, and will make a csv
     or skip to reading the file. It makes a plot of the data, the rolling average
     percent changes, a histogram, and box plot of the data.
-
     Args:
-        country_list:
-        keyword: A string to specify the boxplot and histogram
+        data: Data frame of only one keyword.
+        country_list: A list of the countries.
+        keyword: A string to specify the boxplot and histogram.
         months: An int, the number of months to average the data by.
     """
     #name = csv_name(country_list)
