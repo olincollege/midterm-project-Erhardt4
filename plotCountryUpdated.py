@@ -33,7 +33,8 @@ def readCSV(countryList):
     """
     This function reads a csv in the 'pytrends_Data' folder with an
     identifiable name of the csv in the countryList. This
-    reduces the number of times needed to ping Google.
+    reduces the number of times needed to ping Google. If no csv
+    exists, then the function will make a csv. 
 
     Args:
         countryList: A list of the country search terms
@@ -41,7 +42,9 @@ def readCSV(countryList):
     Returns:
         A dataframe of the interest over time of countries in countryList
     """
-    name = csvName(countryList)    
+    name = csvName(countryList)
+    if(path.exists('pytrends_Data/'+name+'.csv') == False):
+        makeCSV(countryList)
     data = pd.read_csv('pytrends_Data/'+name+'.csv')
     return data
 

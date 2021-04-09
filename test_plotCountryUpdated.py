@@ -1,72 +1,69 @@
 from plotCountryUpdated import(
     # makePlots,
+    readCSV,
     listToString,
+    csvName,
     # rollingAverage,
     # histograms,
     # boxplots
+    
+    
 )
 from collections import Counter
 import pytest
-
 from pytrends.request import TrendReq
+import pandas as pd
 
-pytrends = TrendReq(hl='en-US', tz=360)
-kw_list = ["Tunisia Democracy", " hi"]  # , "Libya Democracy"
-pytrends.build_payload(kw_list, cat=None, timeframe='all',
-                       geo='US', gprop='')  # , cat=0 not included
+# readCSV preparation
+kw_list = ["Tunisia Democracy"]  
+data = pd.read_csv('pytrends_Data/'+csvName(kw_list)+'.csv')
 
-
+readCSV_cases = [(kw_list, data)]
 # Define sets of test cases
-listToString_test = [
+listToString_cases = [
     # Check that 1 length list is returned as string without commas
     (["Country 1"], 'Country 1'),
-    # Check two countries are return with a comma and space
+    # Check two countries are returned with a comma and space
     (["Country 1", "Country 2"], 'Country 1, Country 2'),
-    # Check three countries are return with a comma and space
+    # Check three countries are returned with a comma and space
     (["Country 1", "Country 2", "Country 3"], 'Country 1, Country 2, Country 3'),
-    # Check four countries are return with a comma and space
+    # Check four countries are returned with a comma and space
     (["Country 1", "Country 2", "Country 3", "Country 4"],
      'Country 1, Country 2, Country 3, Country 4'),
-    # Check five (max) countries are return with a comma and space
+    # Check five (max) countries are returned with a comma and space
     (["Country 1", "Country 2", "Country 3", "Country 4", "Country 5"],
      'Country 1, Country 2, Country 3, Country 4, Country 5')
 ]
 
+csvName_cases = [
+    # Check that 1 length list is returned as string without spaces
+    (["Country 1"], 'Country1'),
+    # Check two countries are returned with no spaces, '_' between indexes
+    (["Country 1", "Country 2"], 'Country1_Country2'),
+    # Check three countries are returned with no spaces, '_' between indexes
+    (["Country 1", "Country 2", "Country 3"], 
+     'Country1_Country2_Country3'),
+    # Check four countries are returned with no spaces, '_' between indexes
+    (["Country 1", "Country 2", "Country 3", "Country 4"],
+     'Country1_Country2_Country3_Country4'),
+    # Check five countries are returned with no spaces, '_' between indexes
+    (["Country 1", "Country 2", "Country 3", "Country 4", "Country 5"],
+     'Country1_Country2_Country3_Country4_Country5')
+]
 
-def function_id(fixture_value):
-    """
-    Get the identifier of a function name from a Pytest fixture value.
-    """
-    return fixture_value[0]
-
-
-@pytest.fixture(params=FUNCTIONS, ids=function_id)
-def implementation(request):
-    """
-    Get a specific implementation of a parenthesis matching checker.
-    """
-    return request.param
-
-
-def case_id(fixture_value):
-    """
-    Create a test case identifier to display in Pytest output.
-    """
-    return f"{fixture_value[0]}-{fixture_value[1]}"
-
-
-@pytest.fixture(params=listToString_test, ids=case_id)
-def unit_test_case(request):
-    """
-    Get a specific test case identifier.
-    """
-    return request.param
-
-
-def test_correctness(implementation, unit_test_case):  # pylint: disable=redefined-outer-name, line-too-long
-    """
-    Check that an implementation of parenthesis match checking passes a test
-    case.
-    """
-    string, matches = unit_test_case
-    assert implementation[1](string) == matches
+@pytest.mark.parametrize("countryList, countryString", listToString_cases)
+def test_listToString(countryList, countryString):
+    assert listToString(countryList) == countryString
+    
+@pytest.mark.parametrize("countryList, countryString", csvName_cases)
+def test_csvName(countryList, countryString):
+    assert csvName(countryList) == countryString
+@pytest.mark.parametrize("countryList, countryString", csvName_cases)
+def test_csvName(countryList, countryString):
+    assert csvName(countryList) == countryString
+@pytest.mark.parametrize("functionData, data", readCSV_cases)
+def test_csvName(functionData, data):
+    # Receiving data from google to test readCSV function once. Done so to not ping
+    # Google constantly. No other way to construct the dataframe other than using
+    # the readCSV function, which would defeat the purpose of the test. 
+    assert readCSV(functionData).equals(data)

@@ -10,13 +10,14 @@ from collections import Counter
 import pandas
 import pytest
 
+# Dataframe of EIU_democracy_index.csv
 democracyIndexData = pandas.read_csv("EIU_Democracy_Index.csv")
 
 # Define sets of test cases
 
 createDataFrame_cases = [
     # Check that the downloaded data is properly imported as a pandas dataframe
-    ("EIU_Democracy_Index.csv", democracyIndexData),
+    ("EIU_Democracy_Index.csv", pandas.read_csv("EIU_Democracy_Index.csv")),
 ]
 getSpecificCountriesData_cases = [
     #Check that the data of a specific country is properly gotten
@@ -44,7 +45,7 @@ getCountryNameList_cases = [
                                 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia',
                                 'Cameroon', 'Canada', 'Cape Verde', 'Central African Republic',
                                 'Chad', 'Chile', 'China', 'Colombia', 'Comoros',
-                                'Congo, Dem. Rep.', 'Congo, Rep.', 'Costa Rica',
+                                'Congo, Dem. Rep.', 'Congo, Rep.', 'Costa Rica', 
                                 "Cote d'Ivoire", 'Croatia', 'Cuba', 'Cyprus',
                                 'Czech Republic', 'Denmark', 'Djibouti',
                                 'Dominican Republic', 'Ecuador', 'Egypt',
