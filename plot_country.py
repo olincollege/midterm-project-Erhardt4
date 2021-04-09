@@ -23,7 +23,7 @@ def make_csv(country_list):
         No returns, makes a csv in folder 'pytrends_data' that saves a
         dataframe of interest over time.
     """
-    pytrends.build_payload(country_list, cat=0, timeframe='all',
+    pytrends.build_payload(country_list, cat=0, timeframe='2006-1-1 2019-01-1',
                            geo='US', gprop='')
     data = pytrends.interest_over_time()
     data = data[country_list]
@@ -34,8 +34,8 @@ def make_csv(country_list):
 def read_csv(country_list):
     """
     This function reads a csv in the 'pytrends_data' folder with an
-    identifiable name of the csv in the country_list. This
-    reduces the number of times needed to ping Google. If no csv
+    identifiable name of the csv in the country_list and returns a dataframe
+    . This reduces the number of times needed to ping Google. If no csv
     exists, then the function will make a csv.
 
     Args:
@@ -49,6 +49,21 @@ def read_csv(country_list):
         make_csv(country_list)
     data = pd.read_csv('pytrends_data/'+name+'.csv')
     return data
+
+def country_data_pytrend(country_list):
+    """
+    This function gets data from Google directly and returns a dataframe.
+
+    Args:
+        country_list: A list of the country search terms
+    Returns:
+        A dataframe of the interest over time of countries in country_list
+    """
+    pytrends.build_payload(country_list, cat=0,
+                           timeframe='2004-01-01 2019-01-1', geo='US', gprop='')
+    country_data = pytrends.interest_over_time()
+    country_data = country_data[country_list]
+    return country_data
 
 def csv_name(country_list):
     """
@@ -119,7 +134,6 @@ def rolling_average_pct(country_data, keywords, months):
     plot_b = country_data.rolling(months).mean() # Rolling Average
     plot_c = plot_b.pct_change() # Percent Change
     plot_c.plot()
-
     plt.xlabel("Years")
     plt.ylabel("ROC (times 100%)")
     plt.legend(country_data, loc='best', fancybox=True)
@@ -187,7 +201,7 @@ def boxplots(country_data, keyword):
     pl.title("Boxplot of " + keyword)
 
 
-def pytrend_analysis(country_list, keyword, months):
+def pytrend_analysis(data, country_list, keyword, months):
     """
     This function does a complete analysis of the country_list. It checks
     to see if the file for data analysis exists or not, and will make a csv
@@ -199,10 +213,10 @@ def pytrend_analysis(country_list, keyword, months):
         keyword: A string to specify the boxplot and histogram
         months: An int, the number of months to average the data by.
     """
-    name = csv_name(country_list)
-    if not path.exists('pytrends_data/'+name+'.csv'):
-        make_csv(country_list)
-    data = read_csv(country_list)
+    #name = csv_name(country_list)
+    #if not path.exists('pytrends_data/'+name+'.csv'):
+    #    make_csv(country_list)
+    #data = read_csv(country_list)
     make_plots(data, country_list)
     rolling_average_pct(data, country_list, months)
     histograms(data, keyword)

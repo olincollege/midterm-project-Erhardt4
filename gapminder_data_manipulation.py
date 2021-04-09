@@ -52,7 +52,7 @@ def get_country_name_list(filename):
         filename: A string representing the name of the file which the
                   data is being accessed.
     Returns:
-        A list of strings containing each country's name.
+        A list of strings containing each country's name.plot_c
     """
     read = csv.reader(open(filename, "r"))
     country_list = []
