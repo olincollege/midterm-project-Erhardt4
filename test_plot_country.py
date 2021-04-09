@@ -1,5 +1,6 @@
 """
-docstring
+Library for testing plot_country.py
+through pytest.
 """
 import pytest
 import pandas as pd
@@ -52,13 +53,24 @@ csv_name_cases = [
 @pytest.mark.parametrize("country_list, country_string", list_to_string_cases)
 def test_list_to_string(country_list, country_string):
     """
-    docstring
+    Test that the list_to_string function properly outputs the correct
+    country string.
+
+    Args:
+        country_list: A list of strings of each country's name.
+        country_string: A string representing the expected output of the 
+                        list_to_string function
     """
     assert list_to_string(country_list) == country_string
 @pytest.mark.parametrize("country_list, country_string", csv_name_cases)
 def test_csv_name(country_list, country_string):
     """
-    docstring
+    Test that the csv_name function properly outputs the correct country string.
+
+    Args:
+        country_list: A list of strings of each country's name.
+        country_string: A string representing the expected output of the 
+                        csv_name function
     """
     assert csv_name(country_list) == country_string
 @pytest.mark.parametrize("function_data, data_sol", read_csv_cases)
