@@ -60,7 +60,7 @@ def country_data_pytrend(country_list):
         A dataframe of the interest over time of countries in country_list
     """
     pytrends.build_payload(country_list, cat=0,
-                           timeframe='2004-01-01 2019-01-1', geo='US', gprop='')
+                           timeframe='2006-01-01 2019-01-1', geo='US', gprop='')
     country_data = pytrends.interest_over_time()
     country_data = country_data[country_list]
     return country_data
@@ -175,10 +175,12 @@ def histograms(country_data, keyword):
 
     Args:
         country_data: A dataframe with columns of a country's interest value.
+        This dataframe can only contain data for one keyword
         keyword: A string that is the column heading of the country_data
     Returns:
         No returns, inserts a plot
     """
+    plt.figure()
     country_data.hist([keyword])
     pl.xlabel("Interest Value")
     pl.ylabel("Frequency")
@@ -192,10 +194,12 @@ def boxplots(country_data, keyword):
 
     Args:
         country_data: A dataframe with columns of a country's interest value.
+        This dataframe can only contain data for one keyword
         keyword: A string that is the column heading of the country_data
     Returns:
         No returns, inserts a plot
     """
+    plt.figure()
     country_data.boxplot([keyword])
     pl.ylabel("Interest Value")
     pl.title("Boxplot of " + keyword)
@@ -220,5 +224,5 @@ def pytrend_analysis(data, country_list, keyword, months):
     make_plots(data, country_list)
     rolling_average_pct(data, country_list, months)
     histograms(data, keyword)
-    plt.figure(0)
+    plt.figure()
     boxplots(data, keyword)
